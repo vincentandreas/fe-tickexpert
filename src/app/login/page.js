@@ -1,11 +1,16 @@
 "use client";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Form, Button, Container, Row, Col, Nav,NavLink} from 'react-bootstrap';
+import {Form, Button, Container, Row, Col, Nav,NavLink, Alert} from 'react-bootstrap';
 import { useState } from "react";
+import {useRouter} from 'next/navigation';
+
 export default function Login() {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPswd, setInputPswd] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const { push } = useRouter();
+
   const login = () => {
     var reqJson = JSON.stringify({
       user_name : inputUsername,
@@ -15,22 +20,36 @@ export default function Login() {
     fetch("http://localhost:10000/api/user/login", {
       mode: "cors",
       method: "POST",
+      credentials: 'include',
       body: reqJson,
       headers: {
         "content-type": "text/plain",
       },
     }).then(response => {
       const cookie = response.headers.get('Set-Cookie');
-      console.log("isi cookie " + cookie)
       document.cookie = cookie;
   
       return response.json();
     }).then(respJson =>{
-      console.log(respJson);
+      if(respJson['response_code'] == "00"){
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          push("/events");
+        }, 3000);
+      }
     })
   };
 
   return (
+    <div>
+    {showAlert && (
+      <Alert variant="success" style={{ width: "42rem" }}>
+        <Alert.Heading>
+          Login success
+        </Alert.Heading>
+      </Alert>
+    )}
     <Container className="d-flex justify-content-center align-items-center vh-100">
     <Row>
       <Col>
@@ -71,5 +90,6 @@ export default function Login() {
       </Col>
     </Row>
   </Container>
+  </div>
   )
 }

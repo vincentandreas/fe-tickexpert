@@ -4,7 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useState } from 'react';
 import { Form, FormControl, Button, Dropdown, Card, FormSelect } from 'react-bootstrap';
 import styles from './events.module.css';
+import useAuthentication from '../../utils/useAuth';
+
 const SearchBar = () => {
+    useAuthentication();
     const [eventName, setEventName] = useState('');
     const [city, setCity] = useState('');
     const [category, setCategory] = useState('');
