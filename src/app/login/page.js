@@ -18,7 +18,6 @@ export default function Login() {
     })
     console.log(reqJson);
     fetch("http://localhost:10000/api/user/login", {
-      mode: "cors",
       method: "POST",
       credentials: 'include',
       body: reqJson,
@@ -36,7 +35,7 @@ export default function Login() {
         setTimeout(() => {
           setShowAlert(false);
           push("/events");
-        }, 3000);
+        }, 1000);
       }
     })
   };

@@ -6,11 +6,11 @@ const useAuthentication = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const isAuthenticated = false;
+    let isAuthenticated = false;
     const theSession = getCookie('te-session');
     
-    if (theSession == undefined){
-        isAuthenticated = false;
+    if (theSession != undefined){
+        isAuthenticated = true;
     }
     if (!isAuthenticated) {
       router.push('/login');
