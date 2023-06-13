@@ -3,51 +3,49 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Container, Row, Col, Image, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useEffect } from 'react';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 
-const OrderRoom = ({params}) => {
-  const {router, query, isR} = useRouter();
-  let eventId = params.eventId;
-  const [event, setEvent] = useState(null);
-  const [quantities, setQuantities] = useState([]);
+const OrderRoom = () => {
+  const [eventDetails, setEventDetails] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const { push } = useRouter();
 
+  // let bookingDetailObj = {}
+  let eventId = getCookie("event_id");
   useEffect(() => {
+    console.log("useeff");
     if(eventId){  
-        fetch('http://localhost:10000/api/event/'+eventId)
-        .then((response) => response.json())
-        .then((data) => setEvent(data['data']))
+        fetch('http://localhost:10000/api/event/'+eventId,{
+          mode: "cors",
+          method: "GET",
+          credentials: 'include',
+          headers: {
+            "content-type": "text/plain",
+          },
+        })
+        .then((response) => {
+          return response.json()
+        })
+        .then((data) => {
+          console.log("isi dataa");
+          console.log(data['data']['event_details']);
+
+          setEventDetails(data['data']['event_details']);
+        })
         .catch((error) => console.log(error));
     }
   }, [eventId]);
 
-  const handleQuantityChange = (index, value) => {
-    setQuantities((prevQuantities) => {
-      const newQuantities = [...prevQuantities];
-      newQuantities[index] = value;
-      return newQuantities;
-    });
-  };
-
-  // "user_id": 1,
-  // "event_id": 1,
-  // "q_unique_code":"bfff7866-de2b-4be8-ac9f-e8437da12de7",
-  // "booking_status": "active",
-  // "booking_details": [
-  //     {
-  //         "price": "15007",
-  //         "qty": 1,
-  //         "event_detail_id": 3
-  //     }
-  // ]
 
   let qcode = getCookie('q_unique_code');
   
-  const handleOrder = () => {
+  const handleSubmit = () => {
+    console.log("isi book detials")
+    console.log(bookingDetails);
     var reqJson = JSON.stringify({
-      event_id : eventId,
+      event_id : parseInt(eventId),
       q_unique_code : qcode,
-    //   booking_details:
+      booking_details:bookingDetails
     })
     console.log(reqJson);
     fetch("http://localhost:10000/api/book", {
@@ -60,8 +58,10 @@ const OrderRoom = ({params}) => {
     }).then(response => {
       return response.json();
     }).then(respJson =>{
+      console.log(respJson);
       if(respJson['response_code'] == "00"){
-        setShowAlert(true);
+        alert("success save data");
+        deleteCookie("q_unique_code");
         setTimeout(() => {
           setShowAlert(false);
           push("/events");
@@ -70,50 +70,60 @@ const OrderRoom = ({params}) => {
     })
   };
 
-  if (!event) {
+  const [bookingDetails, setBookingDetails] = useState([]);
+
+  const handleQuantityChange = (eventDetailId, quantityStr) => {
+    let quantity = parseInt(quantityStr);
+    const updatedBookingDetails = [...bookingDetails];
+    const existingIndex = updatedBookingDetails.findIndex(
+      (detail) => detail.event_detail_id === eventDetailId
+    );
+
+    if (existingIndex !== -1) {
+      updatedBookingDetails[existingIndex].qty = quantity;
+    } else {
+      updatedBookingDetails.push({ event_detail_id: eventDetailId, qty: quantity });
+    }
+
+    setBookingDetails(updatedBookingDetails);
+  };
+
+  if (!eventDetails) {
     return <p>Loading event details...</p>;
   }
-
   return (
     <div>
-      {showAlert && (
-      <Alert variant="success" style={{ width: "42rem" }}>
-        <Alert.Heading>
-          Login success
-        </Alert.Heading>
-      </Alert>
-    )}
-    <Container className="mt-5">
-      <Row>
-        {/* <Col>
-          <Image src={event.imageUrl} fluid />
-        </Col> */}
-        <Col>
-          <Card>
+      <h2>Ticket Selection</h2>
+      <Form onSubmit={(e) =>{
+                    e.preventDefault();
+                    handleSubmit()}
+                    }>
+        {eventDetails.map((eD) => (
+          <Card key={eD.ID} className="mb-3">
             <Card.Body>
-              <Card.Title>{event.event_name}</Card.Title>
-              <Card.Text>lorem ipsum</Card.Text>
-              <Form>
-              {event.event_details != null && event.event_details.map((ticketType, index) => (
-                  <Form.Group controlId={`formQuantity-${index}`} key={index}>
-                    <Form.Label>{ticketType.ticket_class} Rp {ticketType.ticket_price}</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min={1}
-                      value={quantities[index]}
-                      onChange={(e) => handleQuantityChange(index, e.target.value)}
-                    />
-                  </Form.Group>
-                ))}
-                <Button variant="primary" onClick={handleOrder}>
-                  Order
-                </Button>
-              </Form>
+              <Card.Title>{eD.ticket_class}</Card.Title>
+              <Card.Text>
+                Ticket Quota: {eD.ticket_quota} | Ticket Remaining:{' '}
+                {eD.ticket_remaining}
+              </Card.Text>
+              <Form.Group controlId={`quantity-${eD.ID}`}>
+                <Form.Label>Quantity:</Form.Label>
+                <Form.Control
+                  type="number"
+                  min="0"
+                  max={eD.ticket_remaining}
+                  value={
+                    bookingDetails.find((detail) => detail.event_detail_id === eD.ID)
+                      ?.qty || ''
+                  }
+                  onChange={(e) => handleQuantityChange(eD.ID, e.target.value)}
+                />
+              </Form.Group>
             </Card.Body>
           </Card>
-        </Col>
-      </Row>
-    </Container>
+        ))}
+        <Button type="submit">Book Tickets</Button>
+      </Form>
     </div>
   );
 };

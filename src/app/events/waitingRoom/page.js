@@ -5,45 +5,64 @@ import { Container, Row, Col, Image, Card, Form, Button, Alert } from 'react-boo
 import { useEffect } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 
-const WaitingRoom = () =>{
-   let qcode = getCookie('q_unique_code');
-   const { push } = useRouter();
+const WaitingRoom = () => {
+  let qcode = getCookie('q_unique_code');
+  const { push } = useRouter();
 
-   if (qcode == undefined){
-        alert("You dont have unique code!");
-        push("/events");
-        return;
-    }
-
-    async function performLongPolling() {
-        try {
-            console.log("Posting long poll");
-          // const response = await fetch('http://localhost:10000/api/subQueue?timeout=1&category=' + qcode);
-          // const data = await response.json();
-      
-          // if (data['events'] !== "" && data['events']['data'] == 'enter room') {
-          //   clearTimeout(pollingTimeout); // Stop the polling
-          //   push("events/order");
-          //   return;
-          // }
-      
-          // Continue polling
-          
-        } catch (error) {
-          console.log(error);
-          // Handle errors
-          // ...
+  if (qcode == undefined) {
+    alert("You dont have unique code!");
+    push("/events");
+    return;
+  }
+  let pollingTimeout;
+  function performLongPolling() {
+    try {
+      console.log("Posting long poll");
+      let url = 'http://localhost:10000/api/subQueue?timeout=50&category=' + qcode;
+      fetch(url, {
+        mode: "cors",
+        method: "GET",
+        credentials: 'include',
+        headers: {
+          "content-type": "text/plain",
+        },
+      }).then(response =>{
+        console.log("isi resp");
+        console.log(response);
+        return response.json()
+      }).then(data => {
+        console.log("Isi data:::");
+        console.log(data);
+        if (data != undefined && data.events != undefined   && data.events.length >0 && data.events[0].data == 'enter room') {
+          console.log("already enter the room");
+          clearTimeout(pollingTimeout); // Stop the polling
+          push("events/order/" );
+          return;
         }
-      }
+      });
+      console.log("before set TO");
+      // Continue polling
+      pollingTimeout = setTimeout(performLongPolling, 51000);
+      console.log("after set TO");
 
+    } catch (error) {
+      console.log(error);
+      // Handle errors
+      // ...
+    }
+  }
+
+  function startPool(){
     performLongPolling();
+  }
 
+  startPool();
 
-    return (<div>
-      <p>Waiting Queue ...</p>
-      <Image src="loading.gif" />
-      
-      </div>);
+  return (<div>
+    <p>Waiting Queue ...</p>
+    <Image src="loading.gif" />
+
+  </div>);
 }
 
 export default WaitingRoom;

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Container, Row, Col, Image, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useEffect } from 'react';
-import { getCookie, setCookie } from 'cookies-next';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 
 const EventDetailsPage = ({params}) => {
   let eventId = params.eventId;
@@ -30,19 +30,6 @@ const EventDetailsPage = ({params}) => {
     }
   }, [eventId]);
 
-
-  // "user_id": 1,
-  // "event_id": 1,
-  // "q_unique_code":"bfff7866-de2b-4be8-ac9f-e8437da12de7",
-  // "booking_status": "active",
-  // "booking_details": [
-  //     {
-  //         "price": "15007",
-  //         "qty": 1,
-  //         "event_detail_id": 3
-  //     }
-  // ]
-
   let qcode = getCookie('q_unique_code');
   
   const handleOrder = () => {
@@ -62,7 +49,10 @@ const EventDetailsPage = ({params}) => {
     }).then(respJson =>{
       console.log(respJson);
       if(respJson['response_code'] == "00"){
+        deleteCookie("q_unique_code");
         setCookie("q_unique_code", respJson['data']['q_unique_code']);
+        deleteCookie("event_id");
+        setCookie("event_id", eventId);
         push("events/waitingRoom");
       }
     })
