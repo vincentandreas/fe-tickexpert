@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { Container, Row, Col, Image, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useEffect } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
+import { useAuthentication } from '@/utils/useAuth';
+import MyNavbar from '@/components/navbar';
 
 const WaitingRoom = () => {
+  useAuthentication();
   let qcode = getCookie('q_unique_code');
   const { push } = useRouter();
 
@@ -59,6 +62,7 @@ const WaitingRoom = () => {
   startPool();
 
   return (<div>
+    <MyNavbar />
     <p>Waiting Queue ...</p>
     <Image src="loading.gif" />
 

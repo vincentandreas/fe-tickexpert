@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
-const useAuthentication = () => {
+
+
+export const useAuthentication = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -20,4 +22,9 @@ const useAuthentication = () => {
   return null;
 };
 
-export default useAuthentication;
+export const Logout = () => {
+  console.log("logout function called");
+  deleteCookie("q_unique_code");
+  deleteCookie("event_id");
+  window.location.href = "/login";
+};

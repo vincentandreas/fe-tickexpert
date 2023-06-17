@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Container, Row, Col, Image, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useEffect } from 'react';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { useAuthentication } from '@/utils/useAuth';
 
 const EventDetailsPage = ({params}) => {
   let eventId = params.eventId;
@@ -13,7 +14,7 @@ const EventDetailsPage = ({params}) => {
   const [quantities, setQuantities] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const { push } = useRouter();
-
+  useAuthentication();
   useEffect(() => {
     if(eventId){  
         fetch('http://localhost:10000/api/event/'+eventId,{

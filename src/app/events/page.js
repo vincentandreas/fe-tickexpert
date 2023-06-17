@@ -1,44 +1,58 @@
 "use client";
-import 'bootstrap/dist/css/bootstrap.min.css'
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import { useState } from 'react';
-import { Form, FormControl, Button, Dropdown, Card, FormSelect } from 'react-bootstrap';
-import styles from './events.module.css';
-import useAuthentication from '../../utils/useAuth';
-import {useRouter} from 'next/navigation';
+import { useState } from "react";
+import {
+  Form,
+  FormControl,
+  Button,
+  Dropdown,
+  Card,
+  FormSelect,
+} from "react-bootstrap";
+import styles from "./events.module.css";
+import { useAuthentication } from "../../utils/useAuth";
+import { useRouter } from "next/navigation";
+import MyNavbar from "@/components/navbar";
 
 const SearchBar = () => {
-    useAuthentication();
-    const [eventName, setEventName] = useState('');
-    const [city, setCity] = useState('');
-    const [category, setCategory] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const { push } = useRouter();
-    
-    const handleSearch = () => {
-      fetch(`http://localhost:10000/api/event?category=${category}&city=${city}&name=${eventName}`, {
-          mode: "cors",
-          method: "GET",
-          credentials: 'include',
-          headers: {
-            "content-type": "text/plain",
-          },
-        }).then(response => {
-          if(!response.ok){
-            alert("Response not ok, redirecting to login page");
-            push("/login");
-          }
-            
-          return response.json();
-        }).then(respJson =>{
-          console.log(respJson);
-          setSearchResults(respJson['data']);
-        })
-    };
-    // Add your search logic here
-    
-    return (
-      <div>
+  const [eventName, setEventName] = useState("");
+  const [city, setCity] = useState("");
+  const [category, setCategory] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const { push } = useRouter();
+  useAuthentication();
+
+  const handleSearch = () => {
+    fetch(
+      `http://localhost:10000/api/event?category=${category}&city=${city}&name=${eventName}`,
+      {
+        mode: "cors",
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "content-type": "text/plain",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          alert("Response not ok, redirecting to login page");
+          push("/login");
+        }
+
+        return response.json();
+      })
+      .then((respJson) => {
+        console.log(respJson);
+        setSearchResults(respJson["data"]);
+      });
+  };
+  // Add your search logic here
+
+  return (
+    <div>
+      <MyNavbar></MyNavbar>
       <div className={styles.searchFormContainer}>
         <Form className={styles.searchForm} inline>
           <FormControl
@@ -69,27 +83,37 @@ const SearchBar = () => {
         </Form>
       </div>
       <div className="d-flex justify-content-around">
-        {searchResults != undefined && searchResults !== null &&
+        {searchResults != undefined &&
+          searchResults !== null &&
           searchResults.map((item, index) => (
-            <Card key={index} style={{ width: '18rem' }}>
+            <Card key={index} style={{ width: "18rem" }}>
               <Card.Img
                 variant="top"
                 src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg"
               />
               <Card.Body>
-                <Card.Title>{item['event_name']}</Card.Title>
-                <Button variant="primary" onClick={(e) =>{
+                <Card.Title>{item["event_name"]}</Card.Title>
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
                     e.preventDefault();
-                    push("/events/detail/" + item['event_id']);
-                }}>See Details</Button>
+                    push("/events/detail/" + item["event_id"]);
+                  }}
+                >
+                  See Details
+                </Button>
               </Card.Body>
             </Card>
+
+            // login false \
+
+            // <Login></Login>
+
+            // panggil component detail disini...
           ))}
       </div>
     </div>
-      
-    );
-  };
-  
-  export default SearchBar;
-  
+  );
+};
+
+export default SearchBar;
