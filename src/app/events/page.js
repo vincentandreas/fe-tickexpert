@@ -13,9 +13,8 @@ import {
 import styles from "./events.module.css";
 import { useAuthentication } from "../../utils/useAuth";
 import { useRouter } from "next/navigation";
-import MyNavbar from "@/components/navbar";
-
-const SearchBar = () => {
+import axios from "axios";
+const EventPage = () => {
   const [eventName, setEventName] = useState("");
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
@@ -24,35 +23,37 @@ const SearchBar = () => {
   useAuthentication();
 
   const handleSearch = () => {
-    fetch(
-      `http://localhost:10000/api/event?category=${category}&city=${city}&name=${eventName}`,
-      {
-        mode: "cors",
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "content-type": "text/plain",
-        },
-      }
-    )
+    axios
+      .get(
+        `http://localhost:10000/api/event?category=${category}&city=${city}&name=${eventName}`,
+        {
+          timeout: 30000,
+          withCredentials: true,
+          headers: {
+            "content-type": "text/plain",
+          },
+        }
+      )
       .then((response) => {
-        if (!response.ok) {
+        setSearchResults(response.data?.data);
+      })
+      .catch((err) => {
+        if (err.code === "ERR_NETWORK") {
+          alert("There's problem in server, try again later.");
+        } else if (err.response.status == "401") {
           alert("Response not ok, redirecting to login page");
           push("/login");
+        } else {
+          console.log(err);
+          alert("Unknown error occured");
         }
-
-        return response.json();
-      })
-      .then((respJson) => {
-        console.log(respJson);
-        setSearchResults(respJson["data"]);
       });
   };
   // Add your search logic here
 
   return (
     <div>
-      <MyNavbar></MyNavbar>
+      <h2>Search Events</h2>
       <div className={styles.searchFormContainer}>
         <Form className={styles.searchForm} inline>
           <FormControl
@@ -91,7 +92,7 @@ const SearchBar = () => {
                 variant="top"
                 src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg"
               />
-              <Card.Body>
+              <Card.Body className="d-flex flex-column align-items-center">
                 <Card.Title>{item["event_name"]}</Card.Title>
                 <Button
                   variant="primary"
@@ -100,7 +101,7 @@ const SearchBar = () => {
                     push("/events/detail/" + item["event_id"]);
                   }}
                 >
-                  See Details
+                  More Detail
                 </Button>
               </Card.Body>
             </Card>
@@ -116,4 +117,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default EventPage;

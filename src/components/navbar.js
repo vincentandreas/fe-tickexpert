@@ -1,24 +1,30 @@
-import { Logout } from '@/utils/useAuth';
-import React from 'react';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Logout } from "@/utils/useAuth";
+import React from "react";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
-const MyNavbar = () => {
+const MyNavbar = ({ onNavbarClick }) => {
+  const handleLogout = () => {
+    Logout();
+  };
 
-    const handleLogout = () =>{
-        Logout();
-    }
+  const handleClick = (componentName) => {
+    onNavbarClick(componentName);
+  };
+
   return (
     <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="/">My Website</Navbar.Brand>
+      <Navbar.Brand href="/">Ticket Expert</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="/events">Events</Nav.Link>
-          <Nav.Link href="/bookings">Bookings</Nav.Link>
+          <Nav.Link onClick={() => handleClick("events")}>Events</Nav.Link>
+          <Nav.Link onClick={() => handleClick("bookings")}>Bookings</Nav.Link>
         </Nav>
         <Nav className="ml-auto">
           <NavDropdown title="Account" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/account">See Account Detail</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => handleClick("accDetails")}>
+              See Account Detail
+            </NavDropdown.Item>
             <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
           </NavDropdown>
         </Nav>

@@ -50,7 +50,7 @@ export default function Register() {
   };
 
   return (
-    <div>
+    <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
       {showAlert && (
         <Alert variant="success" style={{ width: "42rem" }}>
           <Alert.Heading>Register success</Alert.Heading>
