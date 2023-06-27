@@ -1,5 +1,5 @@
-import React from 'react';
-import Table from 'react-bootstrap/Table';
+import React from "react";
+import Table from "react-bootstrap/Table";
 
 const EventTable = ({ events }) => {
   return (
@@ -13,14 +13,15 @@ const EventTable = ({ events }) => {
         </tr>
       </thead>
       <tbody>
-        {events.map((event, index) => (
-          <tr key={index}>
-            <td>{event.event_name}</td>
-            <td>{event.q_unique_code}</td>
-            <td>{event.booking_status}</td>
-            <td>{event.total_price}</td>
-          </tr>
-        ))}
+        {events != null &&
+          events.map((event, index) => (
+            <tr key={index}>
+              <td>{event.event_name}</td>
+              <td>{event.q_unique_code}</td>
+              <td>{event.booking_status}</td>
+              <td>{event.total_price}</td>
+            </tr>
+          ))}
       </tbody>
     </Table>
   );

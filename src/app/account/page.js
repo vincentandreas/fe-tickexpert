@@ -38,7 +38,6 @@ const AccountPage = () => {
       {userData != null && (
         <Card>
           <Card.Body>
-            <Card.Title>User Details</Card.Title>
             <Card.Text>
               <strong>Username:</strong> {userData.user_name}
             </Card.Text>

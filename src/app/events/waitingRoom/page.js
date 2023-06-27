@@ -18,17 +18,20 @@ import { useAuthentication } from "@/utils/useAuth";
 const WaitingRoom = () => {
   useAuthentication();
   let qcode = getCookie("q_unique_code");
+  let eventId = getCookie("event_id");
+  const [queueLength, setQueueLength] = useState(0);
+
   const { push } = useRouter();
 
-  if (qcode == undefined) {
-    alert("You dont have unique code!");
-    push("/events");
+  if (qcode == undefined || eventId == undefined) {
+    alert("You need to choose the event first!");
+    push("/");
     return;
   }
-  let pollingTimeout;
-  function performLongPolling() {
+  let chckLgthTimeout;
+  function performCheckAvail() {
+    console.log("performCheckAvail running ...");
     try {
-      console.log("Posting long poll");
       let url =
         "http://localhost:10000/api/subQueue?timeout=50&category=" + qcode;
       fetch(url, {
@@ -40,38 +43,57 @@ const WaitingRoom = () => {
         },
       })
         .then((response) => {
-          console.log("isi resp");
-          console.log(response);
           return response.json();
         })
         .then((data) => {
-          console.log("Isi data:::");
-          console.log(data);
           if (
             data != undefined &&
             data.events != undefined &&
             data.events.length > 0 &&
             data.events[0].data == "enter room"
           ) {
-            console.log("already enter the room");
-            clearTimeout(pollingTimeout); // Stop the polling
+            clearTimeout(chckLgthTimeout); // Stop the polling
             push("events/order/");
             return;
           }
         });
-      console.log("before set TO");
-      // Continue polling
-      pollingTimeout = setTimeout(performLongPolling, 51000);
-      console.log("after set TO");
+      chckLgthTimeout = setTimeout(performCheckAvail, 51000);
     } catch (error) {
       console.log(error);
-      // Handle errors
-      // ...
+    }
+  }
+
+  function performCheckLength() {
+    try {
+      let url = "http://localhost:10000/api/waitingQueue/checkTotal/" + eventId;
+      fetch(url, {
+        mode: "cors",
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "content-type": "text/plain",
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data != undefined && data.data != undefined && data.data === 0) {
+            clearTimeout(chckLgthTimeout); // Stop the polling
+            push("events/order/");
+            return;
+          }
+          setQueueLength(data.data);
+        });
+      chckLgthTimeout = setTimeout(performCheckLength, 5000);
+    } catch (error) {
+      console.log(error);
     }
   }
 
   function startPool() {
-    performLongPolling();
+    performCheckAvail();
+    performCheckLength();
   }
 
   startPool();
@@ -79,6 +101,7 @@ const WaitingRoom = () => {
   return (
     <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
       <h2>Waiting Queue ...</h2>
+      <p>Currently there are {queueLength} people waiting</p>
       <Image src="../loading.gif" />
     </div>
   );

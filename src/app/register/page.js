@@ -17,7 +17,8 @@ export default function Register() {
   const [inputFname, setInputFname] = useState("");
   const [inputUsername, setInputUsername] = useState("");
   const [inputPswd, setInputPswd] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  const [userType, setUserType] = useState(null);
+  const [inputPhone, setInputPhone] = useState("");
   const { push } = useRouter();
 
   const register = () => {
@@ -25,6 +26,8 @@ export default function Register() {
       user_name: inputUsername,
       password: inputPswd,
       full_name: inputFname,
+      role: userType,
+      phone_number: inputPhone,
     });
     console.log(reqJson);
     fetch("http://localhost:10000/api/user", {
@@ -40,23 +43,18 @@ export default function Register() {
       })
       .then((respJson) => {
         if (respJson["response_code"] == "00") {
-          setShowAlert(true);
-          setTimeout(() => {
-            setShowAlert(false);
-            push("/login");
-          }, 3000);
+          alert("Success register");
+          push("/login");
         }
       });
   };
 
+  const handleRadioChange = (event) => {
+    setUserType(event.target.value);
+  };
+
   return (
     <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
-      {showAlert && (
-        <Alert variant="success" style={{ width: "42rem" }}>
-          <Alert.Heading>Register success</Alert.Heading>
-        </Alert>
-      )}
-
       <Container className="d-flex justify-content-center align-items-center vh-100">
         <Row>
           <Col>
@@ -86,6 +84,15 @@ export default function Register() {
                 />
               </Form.Group>
               <Form.Group className="mb-3">
+                <Form.Label htmlFor="inputPhone">Phone No</Form.Label>
+                <Form.Control
+                  type="number"
+                  id="inputPhone"
+                  onChange={(e) => setInputPhone(e.target.value)}
+                  placeholder="Enter username"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Label htmlFor="inputPswd">Password</Form.Label>
                 <Form.Control
                   type="password"
@@ -94,6 +101,27 @@ export default function Register() {
                   placeholder="Password"
                 />
               </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="inputPswd">Role</Form.Label>
+                <Form.Check
+                  type="radio"
+                  label="User"
+                  name="rb"
+                  value="USER"
+                  checked={userType === "USER"}
+                  onChange={handleRadioChange}
+                />
+                <Form.Check
+                  type="radio"
+                  label="Promotor"
+                  name="rb"
+                  value="PROMOTOR"
+                  checked={userType === "PROMOTOR"}
+                  onChange={handleRadioChange}
+                />
+              </Form.Group>
+
               <Button variant="primary" type="submit">
                 Submit
               </Button>

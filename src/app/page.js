@@ -16,23 +16,30 @@ import BookingPage from "./bookings/page";
 import EventPage from "./events/page";
 import { useState } from "react";
 import AccountPage from "./account/page";
+import EventCrPage from "./events/create/page";
+import HomePage from "@/components/guest";
+import { getCookie } from "cookies-next";
 
 export default function LandingPage() {
-  const [activeComponent, setActiveComponent] = useState(null);
+  const [activeComponent, setActiveComponent] = useState("homes");
 
   const handleClick = (componentName) => {
     setActiveComponent(componentName);
   };
 
   useAuthentication();
-
+  let userRole = getCookie("role");
   return (
     <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
       <MyNavbar onNavbarClick={handleClick} />
       <div>
+        {activeComponent === "homes" && <HomePage />}
         {activeComponent === "bookings" && <BookingPage />}
         {activeComponent === "events" && <EventPage />}
         {activeComponent === "accDetails" && <AccountPage />}
+        {userRole === "PROMOTOR" && activeComponent === "createEvents" && (
+          <EventCrPage />
+        )}
         {/* Add more conditions for other components */}
       </div>
     </div>

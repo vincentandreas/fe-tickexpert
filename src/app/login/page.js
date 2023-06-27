@@ -13,7 +13,8 @@ import {
 } from "react-bootstrap";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import axios from "axios";
+import { setCookie } from "cookies-next";
 export default function Login() {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPswd, setInputPswd] = useState("");
@@ -21,30 +22,38 @@ export default function Login() {
   const { push } = useRouter();
 
   const login = () => {
-    var reqJson = JSON.stringify({
+    var reqJson = {
       user_name: inputUsername,
       password: inputPswd,
-    });
+    };
     console.log(reqJson);
-    fetch("http://localhost:10000/api/user/login", {
-      method: "POST",
-      credentials: "include",
-      body: reqJson,
-      headers: {
-        "content-type": "text/plain",
-      },
-    })
+    axios
+      .post("http://localhost:10000/api/user/login", reqJson, {
+        timeout: 30000,
+        withCredentials: true,
+        headers: {
+          "content-type": "text/plain",
+        },
+      })
       .then((response) => {
+        console.log("isi header ");
+        console.log(response.headers);
         const cookie = response.headers.get("Set-Cookie");
         document.cookie = cookie;
 
-        return response.json();
-      })
-      .then((respJson) => {
-        if (respJson["response_code"] == "00") {
+        if (response.data?.response_code == "00") {
+          setCookie("role", response.data?.result);
           alert("Login success");
-          push("/events");
+          push("/");
         }
+      })
+      .catch((err) => {
+        console.log(err.response?.data);
+        let respMsg = err.response?.data?.response_message;
+        if (respMsg == undefined) {
+          respMsg = "Unknown error occured";
+        }
+        alert(respMsg);
       });
   };
 

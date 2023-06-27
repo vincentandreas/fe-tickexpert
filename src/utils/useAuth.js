@@ -1,21 +1,28 @@
-import { useEffect } from 'react';
-import { deleteCookie, getCookie } from 'cookies-next';
-import {useRouter} from 'next/navigation';
+import { useEffect } from "react";
+import { deleteCookie, getCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 
-
-
-export const useAuthentication = () => {
+export const useAuthentication = (checkUserRole) => {
   const router = useRouter();
 
   useEffect(() => {
     let isAuthenticated = false;
-    const theSession = getCookie('te-session');
-    
-    if (theSession != undefined){
-        isAuthenticated = true;
+    const theSession = getCookie("te-session");
+
+    if (theSession != undefined) {
+      isAuthenticated = true;
     }
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push("/login");
+      return;
+    }
+    if (checkUserRole == true) {
+      console.log("check user role in useAuth");
+      let usrole = getCookie("role");
+      if (usrole == undefined || usrole == "" || usrole !== "PROMOTOR") {
+        alert("This menu only for promotor");
+        router.push("/");
+      }
     }
   }, []);
 

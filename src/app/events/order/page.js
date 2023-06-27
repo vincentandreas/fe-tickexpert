@@ -40,9 +40,6 @@ const OrderRoom = () => {
           return response.json();
         })
         .then((data) => {
-          console.log("isi dataa");
-          console.log(data["data"]["event_details"]);
-
           setEventDetails(data["data"]["event_details"]);
         })
         .catch((error) => console.log(error));
@@ -81,10 +78,7 @@ const OrderRoom = () => {
         if (res.data?.response_code == "00") {
           alert("Success book ticket");
           deleteCookie("q_unique_code");
-          setTimeout(() => {
-            setShowAlert(false);
-            push("/events");
-          }, 1000);
+          push("/");
         } else {
           alert(res.data?.response_message);
         }

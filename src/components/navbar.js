@@ -1,6 +1,7 @@
 import { Logout } from "@/utils/useAuth";
 import React from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { getCookie } from "cookies-next";
 
 const MyNavbar = ({ onNavbarClick }) => {
   const handleLogout = () => {
@@ -10,10 +11,13 @@ const MyNavbar = ({ onNavbarClick }) => {
   const handleClick = (componentName) => {
     onNavbarClick(componentName);
   };
+  let userRole = getCookie("role");
 
   return (
     <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="/">Ticket Expert</Navbar.Brand>
+      <Navbar.Brand onClick={() => handleClick("homes")}>
+        Ticket Expert
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
@@ -21,6 +25,11 @@ const MyNavbar = ({ onNavbarClick }) => {
           <Nav.Link onClick={() => handleClick("bookings")}>Bookings</Nav.Link>
         </Nav>
         <Nav className="ml-auto">
+          {userRole === "PROMOTOR" && (
+            <Nav.Link onClick={() => handleClick("createEvents")}>
+              Create event
+            </Nav.Link>
+          )}
           <NavDropdown title="Account" id="basic-nav-dropdown">
             <NavDropdown.Item onClick={() => handleClick("accDetails")}>
               See Account Detail

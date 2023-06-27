@@ -21,6 +21,8 @@ import { useAuthentication } from "@/utils/useAuth";
 
 const BookingPage = () => {
   console.log("BookingPage");
+  const { push } = useRouter();
+
   const [booking, setBooking] = useState([]);
   useAuthentication();
   useEffect(() => {
