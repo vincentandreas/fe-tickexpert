@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { deleteCookie, getCookie } from "cookies-next";
+import { deleteCookie, getCookie, removeCookies } from "cookies-next";
 import { useRouter } from "next/navigation";
 
 export const useAuthentication = (checkUserRole) => {
@@ -33,5 +33,7 @@ export const Logout = () => {
   console.log("logout function called");
   deleteCookie("q_unique_code");
   deleteCookie("event_id");
+  deleteCookie("role");
+
   window.location.href = "/login";
 };

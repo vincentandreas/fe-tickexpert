@@ -42,7 +42,9 @@ export default function Login() {
         document.cookie = cookie;
 
         if (response.data?.response_code == "00") {
-          setCookie("role", response.data?.result);
+          console.log("response.data");
+          console.log(response.data);
+          setCookie("role", response.data?.data);
           alert("Login success");
           push("/");
         }

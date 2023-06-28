@@ -1,17 +1,20 @@
 import { Logout } from "@/utils/useAuth";
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { getCookie } from "cookies-next";
+import { useState } from "react";
 
 const MyNavbar = ({ onNavbarClick }) => {
   const handleLogout = () => {
     Logout();
   };
-
+  const [userRole, setUserRole] = useState("");
   const handleClick = (componentName) => {
     onNavbarClick(componentName);
   };
-  let userRole = getCookie("role");
+  useEffect(() => {
+    setUserRole(getCookie("role"));
+  }, []);
 
   return (
     <Navbar bg="light" expand="lg">
@@ -22,7 +25,11 @@ const MyNavbar = ({ onNavbarClick }) => {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link onClick={() => handleClick("events")}>Events</Nav.Link>
-          <Nav.Link onClick={() => handleClick("bookings")}>Bookings</Nav.Link>
+          {userRole === "USER" && (
+            <Nav.Link onClick={() => handleClick("bookings")}>
+              Bookings
+            </Nav.Link>
+          )}
         </Nav>
         <Nav className="ml-auto">
           {userRole === "PROMOTOR" && (

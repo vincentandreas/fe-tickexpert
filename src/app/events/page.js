@@ -83,34 +83,30 @@ const EventPage = () => {
           </Button>
         </Form>
       </div>
-      <div className="d-flex justify-content-around">
+      <div className="d-flex flex-wrap justify-content-left">
         {searchResults != undefined &&
           searchResults !== null &&
           searchResults.map((item, index) => (
-            <Card key={index} style={{ width: "18rem" }}>
-              <Card.Img
-                variant="top"
-                src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg"
-              />
-              <Card.Body className="d-flex flex-column align-items-center">
-                <Card.Title>{item["event_name"]}</Card.Title>
-                <Button
-                  variant="primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    push("/events/detail/" + item["event_id"]);
-                  }}
-                >
-                  More Detail
-                </Button>
-              </Card.Body>
-            </Card>
-
-            // login false \
-
-            // <Login></Login>
-
-            // panggil component detail disini...
+            <div key={index} style={{ flexBasis: "33%", marginBottom: "20px" }}>
+              <Card style={{ width: "18rem" }}>
+                <Card.Img
+                  variant="top"
+                  src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg"
+                />
+                <Card.Body className="d-flex flex-column align-items-center">
+                  <Card.Title>{item["event_name"]}</Card.Title>
+                  <Button
+                    variant="primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      push("/events/detail/" + item["event_id"]);
+                    }}
+                  >
+                    More Detail
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
           ))}
       </div>
     </div>

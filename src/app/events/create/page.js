@@ -1,3 +1,4 @@
+"use client";
 import {
   Form,
   Dropdown,
@@ -15,6 +16,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { setCookie } from "cookies-next";
 import styles from "./eventcreate.module.css";
+import Router from "next/router";
+
 export default function EventCrPage() {
   const [events, setEvents] = useState([]);
   const [eventName, setEventName] = useState("");
@@ -24,7 +27,41 @@ export default function EventCrPage() {
     { category: "", price: "", quota: "" },
   ]);
   const [eventCategory, setEventCategory] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
   const { push } = useRouter();
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    axios
+      .post(
+        "http://localhost:10000/api/upload",
+
+        formData,
+        {
+          timeout: 30000,
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        console.log("res.data");
+        console.log(res.data);
+
+        if (res.data?.response_code === "00") {
+          setPhotoUrl(res.data?.data);
+          alert("Success upload photo");
+        }
+      })
+      .catch((error) => {
+        alert("Failed upload photo, try again later");
+        console.error(error);
+      });
+  };
 
   const handleCategorySelect = (category) => {
     setEventCategory(category);
@@ -54,6 +91,7 @@ export default function EventCrPage() {
       event_category: eventCategory, // Replace with the appropriate value
       event_name: eventName,
       event_desc: eventDesc,
+      event_photo: photoUrl,
       event_details: tickets.map((ticket) => ({
         ticket_class: ticket.category,
         ticket_price: ticket.price,
@@ -62,7 +100,7 @@ export default function EventCrPage() {
     };
 
     try {
-      const response = await axios
+      const response = axios
         .post("http://localhost:10000/api/event", requestBody, {
           timeout: 30000,
           withCredentials: true,
@@ -73,14 +111,13 @@ export default function EventCrPage() {
         .then((res) => {
           if (res.data?.response_code == "00") {
             alert("Success add event");
-            push("/");
+            location.reload();
           } else {
             alert(res.data?.response_message);
           }
         })
         .catch((err) => {
           console.log(err);
-          alert(err.response.data.response_message);
         });
 
       console.log(response.data);
@@ -139,6 +176,18 @@ export default function EventCrPage() {
             required
           />
         </Form.Group>
+
+        <Form.Group controlId="formFile" className="mb-3">
+          <Form.Label>Event Photo</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={handleFileChange}
+            accept="image/png, image/gif, image/jpeg"
+          />
+        </Form.Group>
+        <Button variant="primary" onClick={handleUpload}>
+          Upload
+        </Button>
 
         <Form.Group className="mb-3">
           <Form.Label>Tickets</Form.Label>

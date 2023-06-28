@@ -34,7 +34,9 @@ export default function LandingPage() {
       <MyNavbar onNavbarClick={handleClick} />
       <div>
         {activeComponent === "homes" && <HomePage />}
-        {activeComponent === "bookings" && <BookingPage />}
+        {userRole === "USER" && activeComponent === "bookings" && (
+          <BookingPage />
+        )}
         {activeComponent === "events" && <EventPage />}
         {activeComponent === "accDetails" && <AccountPage />}
         {userRole === "PROMOTOR" && activeComponent === "createEvents" && (
