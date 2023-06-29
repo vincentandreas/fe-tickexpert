@@ -24,7 +24,9 @@ const MyNavbar = ({ onNavbarClick }) => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link onClick={() => handleClick("events")}>Events</Nav.Link>
+          {userRole === "USER" && (
+            <Nav.Link onClick={() => handleClick("events")}>Events</Nav.Link>
+          )}
           {userRole === "USER" && (
             <Nav.Link onClick={() => handleClick("bookings")}>
               Bookings

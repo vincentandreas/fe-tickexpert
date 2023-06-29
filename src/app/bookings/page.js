@@ -26,7 +26,7 @@ const BookingPage = () => {
   const [booking, setBooking] = useState([]);
   useAuthentication();
   useEffect(() => {
-    fetch("http://localhost:10000/api/book", {
+    fetch(`${process.env.SERVER_URL}/api/book`, {
       mode: "cors",
       method: "GET",
       credentials: "include",

@@ -37,7 +37,7 @@ export default function LandingPage() {
         {userRole === "USER" && activeComponent === "bookings" && (
           <BookingPage />
         )}
-        {activeComponent === "events" && <EventPage />}
+        {userRole === "USER" && activeComponent === "events" && <EventPage />}
         {activeComponent === "accDetails" && <AccountPage />}
         {userRole === "PROMOTOR" && activeComponent === "createEvents" && (
           <EventCrPage />

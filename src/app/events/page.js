@@ -21,11 +21,14 @@ const EventPage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const { push } = useRouter();
   useAuthentication();
-
+  const addDefaultSrc = (ev) => {
+    ev.target.src =
+      "https://getuikit.com/v2/docs/images/placeholder_600x400.svg";
+  };
   const handleSearch = () => {
     axios
       .get(
-        `http://localhost:10000/api/event?category=${category}&city=${city}&name=${eventName}`,
+        `${process.env.SERVER_URL}/api/event?category=${category}&city=${city}&name=${eventName}`,
         {
           timeout: 30000,
           withCredentials: true,
@@ -49,6 +52,7 @@ const EventPage = () => {
         }
       });
   };
+
   // Add your search logic here
 
   return (
@@ -88,10 +92,15 @@ const EventPage = () => {
           searchResults !== null &&
           searchResults.map((item, index) => (
             <div key={index} style={{ flexBasis: "33%", marginBottom: "20px" }}>
-              <Card style={{ width: "18rem" }}>
+              <Card style={{ width: "20rem" }}>
                 <Card.Img
                   variant="top"
-                  src="https://getuikit.com/v2/docs/images/placeholder_600x400.svg"
+                  src={item["event_photo"]}
+                  style={{
+                    width: "20rem",
+                    maxHeight: "20rem",
+                  }}
+                  onError={addDefaultSrc}
                 />
                 <Card.Body className="d-flex flex-column align-items-center">
                   <Card.Title>{item["event_name"]}</Card.Title>

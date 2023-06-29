@@ -8,7 +8,7 @@ const AccountPage = () => {
   useAuthentication();
   useEffect(() => {
     axios
-      .get(`http://localhost:10000/api/user`, {
+      .get(`${process.env.SERVER_URL}/api/user`, {
         timeout: 30000,
         withCredentials: true,
         headers: {

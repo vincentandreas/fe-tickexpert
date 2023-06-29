@@ -10,6 +10,7 @@ import {
   Image,
   Card,
   Form,
+  Table,
   Button,
   Alert,
 } from "react-bootstrap";
@@ -17,8 +18,11 @@ import { useEffect } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useAuthentication } from "@/utils/useAuth";
 import axios from "axios";
-
-const EventDetailsPage = ({ params }) => {
+import styles from "./eventdetail.module.css";
+const EventDetailsPage = ({ params, showButton }) => {
+  if (showButton == undefined || showButton == null) {
+    showButton = true;
+  }
   let eventId = params.eventId;
   const [event, setEvent] = useState(null);
   const [quantities, setQuantities] = useState([]);
@@ -26,7 +30,7 @@ const EventDetailsPage = ({ params }) => {
   useAuthentication();
   useEffect(() => {
     if (eventId) {
-      fetch("http://localhost:10000/api/event/" + eventId, {
+      fetch(`${process.env.SERVER_URL}/api/event/` + eventId, {
         mode: "cors",
         method: "GET",
         credentials: "include",
@@ -42,11 +46,16 @@ const EventDetailsPage = ({ params }) => {
 
   let qcode = getCookie("q_unique_code");
 
+  const addDefaultSrc = (ev) => {
+    ev.target.src =
+      "https://getuikit.com/v2/docs/images/placeholder_600x400.svg";
+  };
+
   const handleOrder = () => {
     var reqbody = {
       event_id: parseInt(eventId),
     };
-    const waitQueueUrl = "http://localhost:10000/api/waitingQueue";
+    const waitQueueUrl = `${process.env.SERVER_URL}/api/waitingQueue`;
     axios
       .post(waitQueueUrl, reqbody, {
         timeout: 30000,
@@ -59,6 +68,7 @@ const EventDetailsPage = ({ params }) => {
         console.log("dalem res");
         console.log(res);
         if (res.data?.response_code === "00") {
+          alert("Order success! redirecting you to waiting room");
           deleteCookie("q_unique_code");
           setCookie("q_unique_code", res.data?.data?.q_unique_code);
           deleteCookie("event_id");
@@ -78,34 +88,52 @@ const EventDetailsPage = ({ params }) => {
   }
 
   return (
-    <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
-      <Container className="mt-5">
-        <Row>
-          {/* <Col>
-          <Image src={event.imageUrl} fluid />
-        </Col> */}
-          <Col>
-            <Card>
-              <Card.Body>
-                <Card.Title>{event.event_name}</Card.Title>
-                <Card.Text>{event.event_desc}</Card.Text>
-                {event.event_details != null &&
-                  event.event_details.map((ticketType, index) => (
-                    <div key={index}>
-                      <p>
-                        {ticketType.ticket_class} Rp {ticketType.ticket_price}
-                      </p>
-                      <p>Remaining: {ticketType.ticket_remaining}</p>
-                      <hr />
-                    </div>
-                  ))}
-                <Button variant="primary" onClick={handleOrder}>
-                  Order
-                </Button>
+    <div name="evPaling" className={styles.eventDetailsPage}>
+      <Container className="mt-5" style={{ flex: 1, width: "50%" }}>
+        <Row style={{ height: "100%" }}>
+          <Col className={styles.eventDetailsCol}>
+            <Card className={styles.eventDetailsCard}>
+              <Card.Body className={styles.eventDetailsBody}>
+                <div>
+                  <Card.Title>{event.event_name}</Card.Title>
+                  <Card.Text>{event.event_desc}</Card.Text>
+                  <Card.Text>
+                    <b>Ticket Detail</b>
+                  </Card.Text>
+
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Remaining</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {event.event_details != null &&
+                        event.event_details.map((ticketType, index) => (
+                          <tr key={index}>
+                            <td>{ticketType.ticket_class}</td>
+                            <td>Rp {ticketType.ticket_price}</td>
+                            <td>{ticketType.ticket_remaining}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </Table>
+                </div>
+                {showButton && (
+                  <Button variant="primary" onClick={handleOrder}>
+                    Order
+                  </Button>
+                )}
               </Card.Body>
             </Card>
           </Col>
         </Row>
+      </Container>
+      <Container className="mt-5" style={{ flex: 1, width: "50%" }}>
+        <Image src={event.event_photo} alt="" onError={addDefaultSrc} />
       </Container>
     </div>
   );

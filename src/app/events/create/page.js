@@ -40,7 +40,7 @@ export default function EventCrPage() {
     formData.append("file", selectedFile);
     axios
       .post(
-        "http://localhost:10000/api/upload",
+        `${process.env.SERVER_URL}/api/upload`,
 
         formData,
         {
@@ -86,6 +86,16 @@ export default function EventCrPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (tickets.length == 0) {
+      alert("Event should have minimum 1 ticket category");
+      return;
+    }
+
+    if (photoUrl == null || photoUrl.length == 0) {
+      alert("You must upload your photo first");
+      return;
+    }
+
     const requestBody = {
       event_location: eventLocation,
       event_category: eventCategory, // Replace with the appropriate value
@@ -101,7 +111,7 @@ export default function EventCrPage() {
 
     try {
       const response = axios
-        .post("http://localhost:10000/api/event", requestBody, {
+        .post(`${process.env.SERVER_URL}/api/event`, requestBody, {
           timeout: 30000,
           withCredentials: true,
           headers: {
@@ -132,116 +142,129 @@ export default function EventCrPage() {
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="eventName" className="mb-3">
-          <Form.Label>Event Name</Form.Label>
-          <Form.Control
-            type="text"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <h2>Create Event</h2>
+      <div>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="eventName" className="mb-3">
+            <Form.Label>Event Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Form.Group controlId="eventCategory" className="mb-3">
-          <Form.Label>Event Category</Form.Label>
-          <Form.Select
-            value={eventCategory}
-            onChange={(e) => handleCategorySelect(e.target.value)}
-            required
+          <Form.Group controlId="eventCategory" className="mb-3">
+            <Form.Label>Event Category</Form.Label>
+            <Form.Select
+              value={eventCategory}
+              onChange={(e) => handleCategorySelect(e.target.value)}
+              required
+            >
+              <option value="">Select an option</option>
+              <option value="music">Music</option>
+              <option value="theater">Theater</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group controlId="eventDesc" className="mb-3">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={eventDesc}
+              onChange={(e) => setEventDesc(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="eventLocation" className="mb-3">
+            <Form.Label>Location</Form.Label>
+            <Form.Control
+              type="text"
+              value={eventLocation}
+              onChange={(e) => setEventLocation(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label>Event Photo</Form.Label>
+            <Row>
+              <Col>
+                <Form.Control
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/png, image/gif, image/jpeg"
+                />
+              </Col>
+              <Col>
+                <Button variant="primary" onClick={handleUpload}>
+                  Upload
+                </Button>
+              </Col>
+            </Row>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Tickets</Form.Label>
+            {tickets.map((ticket, index) => (
+              <div key={index} className={styles.ticketRow}>
+                <Form.Control
+                  type="text"
+                  placeholder="Ticket Category"
+                  value={ticket.category}
+                  onChange={(e) =>
+                    handleTicketChange(index, "category", e.target.value)
+                  }
+                  required
+                />
+                <Form.Control
+                  type="text"
+                  placeholder="Ticket Price"
+                  value={ticket.price}
+                  onChange={(e) =>
+                    handleTicketChange(index, "price", e.target.value)
+                  }
+                  required
+                />
+                <Form.Control
+                  type="number"
+                  placeholder="Ticket Quota"
+                  value={ticket.quota}
+                  onChange={(e) =>
+                    handleTicketChange(index, "quota", e.target.value)
+                  }
+                  required
+                />
+                <Button
+                  variant="danger"
+                  onClick={() => handleDeleteTicket(index)}
+                >
+                  Delete
+                </Button>
+              </div>
+            ))}
+          </Form.Group>
+
+          <Button
+            variant="secondary"
+            onClick={handleAddTicket}
+            className="mb-3"
           >
-            <option value="">Select an option</option>
-            <option value="music">Music</option>
-            <option value="theater">Theater</option>
-          </Form.Select>
-        </Form.Group>
+            +
+          </Button>
 
-        <Form.Group controlId="eventDesc" className="mb-3">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            value={eventDesc}
-            onChange={(e) => setEventDesc(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="eventLocation" className="mb-3">
-          <Form.Label>Location</Form.Label>
-          <Form.Control
-            type="text"
-            value={eventLocation}
-            onChange={(e) => setEventLocation(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="formFile" className="mb-3">
-          <Form.Label>Event Photo</Form.Label>
-          <Form.Control
-            type="file"
-            onChange={handleFileChange}
-            accept="image/png, image/gif, image/jpeg"
-          />
-        </Form.Group>
-        <Button variant="primary" onClick={handleUpload}>
-          Upload
-        </Button>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Tickets</Form.Label>
-          {tickets.map((ticket, index) => (
-            <div key={index} className={styles.ticketRow}>
-              <Form.Control
-                type="text"
-                placeholder="Ticket Category"
-                value={ticket.category}
-                onChange={(e) =>
-                  handleTicketChange(index, "category", e.target.value)
-                }
-                required
-              />
-              <Form.Control
-                type="text"
-                placeholder="Ticket Price"
-                value={ticket.price}
-                onChange={(e) =>
-                  handleTicketChange(index, "price", e.target.value)
-                }
-                required
-              />
-              <Form.Control
-                type="number"
-                placeholder="Ticket Quota"
-                value={ticket.quota}
-                onChange={(e) =>
-                  handleTicketChange(index, "quota", e.target.value)
-                }
-                required
-              />
-              <Button
-                variant="danger"
-                onClick={() => handleDeleteTicket(index)}
-              >
-                Delete
+          <div className="d-grid">
+            <div style={{ width: "150px", margin: "0 auto" }}>
+              <Button variant="primary" type="submit">
+                Add Event
               </Button>
             </div>
-          ))}
-        </Form.Group>
-
-        <Button variant="secondary" onClick={handleAddTicket} className="mb-3">
-          +
-        </Button>
-
-        <div className="d-grid">
-          <div style={{ width: "150px", margin: "0 auto" }}>
-            <Button variant="primary" type="submit">
-              Add Event
-            </Button>
           </div>
-        </div>
-      </Form>
+        </Form>
+      </div>
     </div>
   );
 }

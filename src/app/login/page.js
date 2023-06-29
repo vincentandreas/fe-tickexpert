@@ -28,7 +28,7 @@ export default function Login() {
     };
     console.log(reqJson);
     axios
-      .post("http://localhost:10000/api/user/login", reqJson, {
+      .post(`${process.env.SERVER_URL}/api/user/login`, reqJson, {
         timeout: 30000,
         withCredentials: true,
         headers: {

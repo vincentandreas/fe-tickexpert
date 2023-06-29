@@ -29,11 +29,11 @@ const WaitingRoom = () => {
     return;
   }
   let chckLgthTimeout;
+  let chckAvailable;
   function performCheckAvail() {
     console.log("performCheckAvail running ...");
     try {
-      let url =
-        "http://localhost:10000/api/subQueue?timeout=50&category=" + qcode;
+      let url = `${process.env.SERVER_URL}/api/subQueue?timeout=50&category=${qcode}`;
       fetch(url, {
         mode: "cors",
         method: "GET",
@@ -52,12 +52,12 @@ const WaitingRoom = () => {
             data.events.length > 0 &&
             data.events[0].data == "enter room"
           ) {
-            clearTimeout(chckLgthTimeout); // Stop the polling
+            clearTimeout(chckAvailable); // Stop the polling
             push("events/order/");
             return;
           }
         });
-      chckLgthTimeout = setTimeout(performCheckAvail, 51000);
+      chckAvailable = setTimeout(performCheckAvail, 51000);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +65,7 @@ const WaitingRoom = () => {
 
   function performCheckLength() {
     try {
-      let url = "http://localhost:10000/api/waitingQueue/checkTotal/" + eventId;
+      let url = `${process.env.SERVER_URL}/api/waitingQueue/checkTotal/${eventId}`;
       fetch(url, {
         mode: "cors",
         method: "GET",
@@ -99,8 +99,17 @@ const WaitingRoom = () => {
   startPool();
 
   return (
-    <div style={{ marginLeft: "1rem", marginRight: "1rem" }}>
-      <h2>Waiting Queue ...</h2>
+    <div
+      style={{
+        marginLeft: "1rem",
+        marginRight: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <h2>Waiting Room ...</h2>
       <p>Currently there are {queueLength} people waiting</p>
       <Image src="../loading.gif" />
     </div>

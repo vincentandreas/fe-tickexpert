@@ -30,7 +30,7 @@ export default function Register() {
       phone_number: inputPhone,
     });
     console.log(reqJson);
-    fetch("http://localhost:10000/api/user", {
+    fetch(`${process.env.SERVER_URL}/api/user`, {
       mode: "cors",
       method: "POST",
       body: reqJson,
