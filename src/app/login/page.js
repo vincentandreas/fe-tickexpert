@@ -26,7 +26,6 @@ export default function Login() {
       user_name: inputUsername,
       password: inputPswd,
     };
-    console.log(reqJson);
     axios
       .post(`${process.env.SERVER_URL}/api/user/login`, reqJson, {
         timeout: 30000,
@@ -36,21 +35,16 @@ export default function Login() {
         },
       })
       .then((response) => {
-        console.log("isi header ");
-        console.log(response.headers);
         const cookie = response.headers.get("Set-Cookie");
         document.cookie = cookie;
 
         if (response.data?.response_code == "00") {
-          console.log("response.data");
-          console.log(response.data);
           setCookie("role", response.data?.data);
           alert("Login success");
           push("/");
         }
       })
       .catch((err) => {
-        console.log(err.response?.data);
         let respMsg = err.response?.data?.response_message;
         if (respMsg == undefined) {
           respMsg = "Unknown error occured";

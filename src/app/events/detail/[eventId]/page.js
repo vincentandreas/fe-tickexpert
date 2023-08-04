@@ -65,8 +65,6 @@ const EventDetailsPage = ({ params, showButton }) => {
         },
       })
       .then((res) => {
-        console.log("dalem res");
-        console.log(res);
         if (res.data?.response_code === "00") {
           alert("Order success! redirecting you to waiting room");
           deleteCookie("q_unique_code");
@@ -86,13 +84,16 @@ const EventDetailsPage = ({ params, showButton }) => {
   if (!event) {
     return <p>Loading event details...</p>;
   }
+  function handleNominal(priceInput) {
+    let priceFloat = parseFloat(priceInput);
+
+    return "Rp " + priceFloat.toLocaleString();
+  }
 
   return (
-    <div name="evPaling" className={styles.eventDetailsPage}>
-      <Container className="mt-5" style={{ flex: 1, width: "50%" }}>
-        <Row style={{ height: "100%" }}>
-          <Col className={styles.eventDetailsCol}>
-            <Card className={styles.eventDetailsCard}>
+    <div name="evPaling" style={{display: "flex", height: 'auto', width: "100%", justifyContent: "space-between"}}>
+      <div style={{width: "50%"}}>
+            <Card style={{height: "1000px"}} className={styles.eventDetailsCard}>
               <Card.Body className={styles.eventDetailsBody}>
                 <div>
                   <Card.Title>{event.event_name}</Card.Title>
@@ -115,7 +116,7 @@ const EventDetailsPage = ({ params, showButton }) => {
                         event.event_details.map((ticketType, index) => (
                           <tr key={index}>
                             <td>{ticketType.ticket_class}</td>
-                            <td>Rp {ticketType.ticket_price}</td>
+                            <td>{handleNominal(ticketType.ticket_price)}</td>
                             <td>{ticketType.ticket_remaining}</td>
                           </tr>
                         ))}
@@ -129,12 +130,19 @@ const EventDetailsPage = ({ params, showButton }) => {
                 )}
               </Card.Body>
             </Card>
-          </Col>
-        </Row>
-      </Container>
-      <Container className="mt-5" style={{ flex: 1, width: "50%" }}>
-        <Image src={event.event_photo} alt="" onError={addDefaultSrc} />
-      </Container>
+      </div>
+      <div style={{width: "50%"}}>
+        <Image
+          src={event.event_photo}
+          alt=""
+          onError={addDefaultSrc}
+          style={{
+            height: "1000px"
+          }}
+        />
+      </div>
+
+        
     </div>
   );
 };

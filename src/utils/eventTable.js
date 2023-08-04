@@ -2,6 +2,12 @@ import React from "react";
 import Table from "react-bootstrap/Table";
 
 const EventTable = ({ events }) => {
+  function handleNominal(priceInput) {
+    let priceFloat = parseFloat(priceInput);
+
+    return "Rp " + priceFloat.toLocaleString();
+  }
+
   return (
     <Table striped bordered hover>
       <thead>
@@ -19,7 +25,7 @@ const EventTable = ({ events }) => {
               <td>{event.event_name}</td>
               <td>{event.q_unique_code}</td>
               <td>{event.booking_status}</td>
-              <td>{event.total_price}</td>
+              <td>{handleNominal(event.total_price)}</td>
             </tr>
           ))}
       </tbody>

@@ -47,7 +47,6 @@ const EventPage = () => {
           alert("Response not ok, redirecting to login page");
           push("/login");
         } else {
-          console.log(err);
           alert("Unknown error occured");
         }
       });
@@ -98,7 +97,7 @@ const EventPage = () => {
                   src={item["event_photo"]}
                   style={{
                     width: "20rem",
-                    maxHeight: "20rem",
+                    maxHeight: "25rem",
                   }}
                   onError={addDefaultSrc}
                 />

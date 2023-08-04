@@ -31,7 +31,6 @@ const WaitingRoom = () => {
   let chckLgthTimeout;
   let chckAvailable;
   function performCheckAvail() {
-    console.log("performCheckAvail running ...");
     try {
       let url = `${process.env.SERVER_URL}/api/subQueue?timeout=50&category=${qcode}`;
       fetch(url, {

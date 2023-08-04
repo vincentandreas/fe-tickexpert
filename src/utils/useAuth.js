@@ -17,7 +17,6 @@ export const useAuthentication = (checkUserRole) => {
       return;
     }
     if (checkUserRole == true) {
-      console.log("check user role in useAuth");
       let usrole = getCookie("role");
       if (usrole == undefined || usrole == "" || usrole !== "PROMOTOR") {
         alert("This menu only for promotor");
@@ -30,7 +29,6 @@ export const useAuthentication = (checkUserRole) => {
 };
 
 export const Logout = () => {
-  console.log("logout function called");
   deleteCookie("q_unique_code");
   deleteCookie("event_id");
   deleteCookie("role");

@@ -27,7 +27,6 @@ const OrderRoom = () => {
   // let bookingDetailObj = {}
   let eventId = getCookie("event_id");
   useEffect(() => {
-    console.log("useeff");
     if (eventId) {
       fetch(`${process.env.SERVER_URL}/api/event/` + eventId, {
         mode: "cors",
@@ -50,8 +49,6 @@ const OrderRoom = () => {
   let qcode = getCookie("q_unique_code");
 
   const handleSubmit = () => {
-    console.log("isi book detials");
-    console.log(bookingDetails);
     if (bookingDetails.length == 0) {
       alert("Booking couldn't be empty!");
       return;
@@ -73,9 +70,6 @@ const OrderRoom = () => {
         },
       })
       .then((res) => {
-        console.log("dalem res");
-        console.log(res);
-
         if (res.data?.response_code == "00") {
           alert("Success book ticket");
           deleteCookie("q_unique_code");
@@ -97,7 +91,7 @@ const OrderRoom = () => {
     const existingIndex = updatedBookingDetails.findIndex(
       (detail) => detail.event_detail_id === eventDetailId
     );
-
+ 
     if (existingIndex !== -1) {
       updatedBookingDetails[existingIndex].qty = quantity;
     } else {
@@ -115,13 +109,12 @@ const OrderRoom = () => {
   }
   return (
     <div name="orderPaling">
-      <div className={styles.orderTicketContainer}>
+      <div>
         {/* <div name="orderEvDet"> */}
         <EventDetailsPage params={{ eventId: eventId }} showButton={false} />
+        
       </div>
-      <div name="orderBawah">
-        <div className={styles.orderTicketContainer}>
-          <Container className="mt-5" style={{ flex: 1 }}>
+      <div style={{margin: "10vh 0 0 0"}}> 
             {/* <div className="mt-5" style={{ flex: 1 }}> */}
             {/* <Container> */}
             <h2>Order Ticket</h2>
@@ -169,10 +162,13 @@ const OrderRoom = () => {
 
               <Button type="submit">Book Tickets</Button>
             </Form>
-          </Container>
+          </div>
+      {/* <div name="orderBawah">
+        <div className={styles.orderTicketContainer}> */}
+          
           {/* </div> */}
-        </div>
-      </div>
+        {/* </div>
+      </div> */}
     </div>
   );
 };

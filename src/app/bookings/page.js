@@ -20,7 +20,6 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useAuthentication } from "@/utils/useAuth";
 
 const BookingPage = () => {
-  console.log("BookingPage");
   const { push } = useRouter();
 
   const [booking, setBooking] = useState([]);
@@ -42,8 +41,6 @@ const BookingPage = () => {
         return response.json();
       })
       .then((data) => {
-        console.log("isi data");
-        console.log(data);
         if (
           data["response_code"] != undefined &&
           data["response_code"] === "00"

@@ -49,9 +49,6 @@ export default function EventCrPage() {
         }
       )
       .then((res) => {
-        console.log("res.data");
-        console.log(res.data);
-
         if (res.data?.response_code === "00") {
           setPhotoUrl(res.data?.data);
           alert("Success upload photo");
@@ -129,8 +126,6 @@ export default function EventCrPage() {
         .catch((err) => {
           console.log(err);
         });
-
-      console.log(response.data);
       setEventName("");
       setEventDesc("");
       setEventLocation("");

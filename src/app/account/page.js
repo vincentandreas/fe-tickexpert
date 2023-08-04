@@ -16,7 +16,6 @@ const AccountPage = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setUserData(response.data.data);
       })
       .catch((err) => {
@@ -26,7 +25,6 @@ const AccountPage = () => {
           alert("Response not ok, redirecting to login page");
           push("/login");
         } else {
-          console.log(err);
           alert("Unknown error occured");
         }
       });

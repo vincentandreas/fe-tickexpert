@@ -29,7 +29,6 @@ export default function Register() {
       role: userType,
       phone_number: inputPhone,
     });
-    console.log(reqJson);
     fetch(`${process.env.SERVER_URL}/api/user`, {
       mode: "cors",
       method: "POST",
