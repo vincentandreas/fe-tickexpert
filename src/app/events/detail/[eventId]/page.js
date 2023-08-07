@@ -91,9 +91,9 @@ const EventDetailsPage = ({ params, showButton }) => {
   }
 
   return (
-    <div name="evPaling" style={{display: "flex", height: 'auto', width: "100%", justifyContent: "space-between"}}>
+    <div style={{display: "flex", height: 'auto',justifyContent: "space-between", marginLeft: "1rem", marginRight: "1rem", marginTop:"1rem" }}>
       <div style={{width: "50%"}}>
-            <Card style={{height: "1000px"}} className={styles.eventDetailsCard}>
+            <Card style={{height: "400px"}}>
               <Card.Body className={styles.eventDetailsBody}>
                 <div>
                   <Card.Title>{event.event_name}</Card.Title>
@@ -131,13 +131,13 @@ const EventDetailsPage = ({ params, showButton }) => {
               </Card.Body>
             </Card>
       </div>
-      <div style={{width: "50%"}}>
+      <div style={{width: "50%", marginLeft:"1rem"}}>
         <Image
           src={event.event_photo}
           alt=""
           onError={addDefaultSrc}
           style={{
-            height: "1000px"
+            height: "400px"
           }}
         />
       </div>

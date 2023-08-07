@@ -110,13 +110,10 @@ const OrderRoom = () => {
   return (
     <div name="orderPaling">
       <div>
-        {/* <div name="orderEvDet"> */}
         <EventDetailsPage params={{ eventId: eventId }} showButton={false} />
         
       </div>
-      <div style={{margin: "10vh 0 0 0"}}> 
-            {/* <div className="mt-5" style={{ flex: 1 }}> */}
-            {/* <Container> */}
+      <div style={{margin: "5vh 1rem 0 1rem", width: "48%" }}> 
             <h2>Order Ticket</h2>
             <Form
               onSubmit={(e) => {
@@ -125,7 +122,6 @@ const OrderRoom = () => {
               }}
             >
               {eventDetails.map((eD) => (
-                // <Card key={eD.ID} className="mb-3" style={{ width: "50%" }}>
                 <Card key={eD.ID}>
                   <Card.Body>
                     <Card.Title>{eD.ticket_class}</Card.Title>
@@ -159,16 +155,11 @@ const OrderRoom = () => {
                   </Card.Body>
                 </Card>
               ))}
-
-              <Button type="submit">Book Tickets</Button>
+              <div style={{marginTop:"1rem"}}>
+                <Button type="submit">Book</Button>
+              </div>
             </Form>
           </div>
-      {/* <div name="orderBawah">
-        <div className={styles.orderTicketContainer}> */}
-          
-          {/* </div> */}
-        {/* </div>
-      </div> */}
     </div>
   );
 };

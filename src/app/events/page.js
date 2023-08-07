@@ -51,9 +51,6 @@ const EventPage = () => {
         }
       });
   };
-
-  // Add your search logic here
-
   return (
     <div>
       <h2>Search Events</h2>
@@ -96,7 +93,7 @@ const EventPage = () => {
                   variant="top"
                   src={item["event_photo"]}
                   style={{
-                    width: "20rem",
+                    maxWidth: "20rem",
                     maxHeight: "25rem",
                   }}
                   onError={addDefaultSrc}

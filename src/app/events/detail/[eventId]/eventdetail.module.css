@@ -10,10 +10,6 @@
   flex-direction: column;
 }
 
-.eventDetailsCard {
-
-}
-
 .eventDetailsBody {
   display: flex;
   flex-direction: column;
