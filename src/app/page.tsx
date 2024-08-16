@@ -10,15 +10,15 @@ import {
   NavLink,
   Image,
 } from "react-bootstrap";
-import MyNavbar from "@/components/navbar";
-import { useAuthentication } from "@/utils/useAuth";
 import BookingPage from "./bookings/page";
 import EventPage from "./events/page";
 import { useState } from "react";
 import AccountPage from "./account/page";
 import EventCrPage from "./events/create/page";
-import HomePage from "@/components/guest";
 import { getCookie } from "cookies-next";
+import { useAuthentication } from "../utils/useAuth";
+import MyNavbar from "../components/navbar";
+import HomePage from "../components/guest";
 
 export default function LandingPage() {
   const [activeComponent, setActiveComponent] = useState("homes");

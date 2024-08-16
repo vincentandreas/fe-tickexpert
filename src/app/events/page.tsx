@@ -55,7 +55,7 @@ const EventPage = () => {
     <div>
       <h2>Search Events</h2>
       <div className={styles.searchFormContainer}>
-        <Form className={styles.searchForm} inline>
+        <Form className={styles.searchForm}>
           <FormControl
             type="text"
             placeholder="Event name"

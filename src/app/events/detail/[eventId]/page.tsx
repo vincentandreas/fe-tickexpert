@@ -16,9 +16,9 @@ import {
 } from "react-bootstrap";
 import { useEffect } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { useAuthentication } from "@/utils/useAuth";
 import axios from "axios";
 import styles from "./eventdetail.module.css";
+import { useAuthentication } from "../../../../utils/useAuth";
 const EventDetailsPage = ({ params, showButton }) => {
   if (showButton == undefined || showButton == null) {
     showButton = true;

@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 import { useEffect } from "react";
 import { getCookie, setCookie } from "cookies-next";
-import { useAuthentication } from "@/utils/useAuth";
+import { useAuthentication } from "../../../utils/useAuth";
 
 const WaitingRoom = () => {
   useAuthentication();

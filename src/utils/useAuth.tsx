@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { deleteCookie, getCookie, removeCookies } from "cookies-next";
 import { useRouter } from "next/navigation";
 
-export const useAuthentication = (checkUserRole) => {
+export const useAuthentication = (checkUserRole? : boolean) => {
   const router = useRouter();
 
   useEffect(() => {

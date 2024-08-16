@@ -17,7 +17,8 @@ import {
 } from "react-bootstrap";
 import { useEffect } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { useAuthentication } from "@/utils/useAuth";
+import { useAuthentication } from "../../utils/useAuth";
+
 
 const BookingPage = () => {
   const { push } = useRouter();

@@ -1,9 +1,11 @@
 "use client";
-import { useAuthentication } from "@/utils/useAuth";
+import { useRouter } from 'next/router'
 import { Card } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuthentication } from "../../utils/useAuth";
 const AccountPage = () => {
+  const router = useRouter()
   const [userData, setUserData] = useState(null);
   useAuthentication();
   useEffect(() => {
@@ -23,7 +25,7 @@ const AccountPage = () => {
           alert("There's problem in server, try again later.");
         } else if (err.response.status == "401") {
           alert("Response not ok, redirecting to login page");
-          push("/login");
+          router.push("/login");
         } else {
           alert("Unknown error occured");
         }

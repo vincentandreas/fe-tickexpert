@@ -35,8 +35,6 @@ export default function Login() {
         },
       })
       .then((response) => {
-        const cookie = response.headers.get("Set-Cookie");
-        document.cookie = cookie;
 
         if (response.data?.response_code == "00") {
           setCookie("role", response.data?.data);

@@ -13,11 +13,12 @@ import {
   Alert,
 } from "react-bootstrap";
 import { useEffect } from "react";
-import { deleteCookie, getCookie } from "cookies-next";
-import { useAuthentication } from "@/utils/useAuth";
+import { CookieValueTypes, deleteCookie, getCookie } from "cookies-next";
+
 import axios from "axios";
 import EventDetailsPage from "../detail/[eventId]/page";
 import styles from "./order.module.css";
+import { useAuthentication } from "../../../utils/useAuth";
 const OrderRoom = () => {
   useAuthentication();
   const [eventDetails, setEventDetails] = useState(null);
@@ -25,7 +26,7 @@ const OrderRoom = () => {
   const { push } = useRouter();
 
   // let bookingDetailObj = {}
-  let eventId = getCookie("event_id");
+  let eventId : CookieValueTypes = getCookie("event_id");
   useEffect(() => {
     if (eventId) {
       fetch(`${process.env.SERVER_URL}/api/event/` + eventId, {
@@ -55,7 +56,7 @@ const OrderRoom = () => {
     }
 
     var reqbody = {
-      event_id: parseInt(eventId),
+      event_id: parseInt(eventId as string),
       q_unique_code: qcode,
       booking_details: bookingDetails,
     };
@@ -108,7 +109,7 @@ const OrderRoom = () => {
     return <p>Loading event details...</p>;
   }
   return (
-    <div name="orderPaling">
+    <div>
       <div>
         <EventDetailsPage params={{ eventId: eventId }} showButton={false} />
         

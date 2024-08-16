@@ -1,8 +1,8 @@
-import { Logout } from "@/utils/useAuth";
 import React, { useEffect } from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { getCookie } from "cookies-next";
 import { useState } from "react";
+import { Logout } from "../utils/useAuth";
 
 const MyNavbar = ({ onNavbarClick }) => {
   const handleLogout = () => {
@@ -13,7 +13,7 @@ const MyNavbar = ({ onNavbarClick }) => {
     onNavbarClick(componentName);
   };
   useEffect(() => {
-    setUserRole(getCookie("role"));
+    setUserRole(getCookie("role") as string);
   }, []);
 
   return (
